@@ -1,0 +1,75 @@
+.blur-tint {
+  backdrop-filter: blur(12px);                 /* Blur the background */
+  -webkit-backdrop-filter: blur(12px);         /* Safari support */
+  background-color: rgba(225, 225, 225, 0.075);     /* Opaque tint color with alpha */
+  border-radius: 0.5rem;                       /* Rounded corners (12px) */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);   /* Soft shadow */
+  cursor: pointer;
+  transition: transform 0.25s ease;
+  width: 18rem;                                 /* w-72 equivalent */
+  padding: 2rem;                                /* p-8 equivalent */
+  color: white;                                 /* text-white */
+}
+
+.blur-tint:hover {
+  transform: scale(1.15);                        /* Hover scale effect */
+  box-shadow: 0 6px 40px rgba(0, 0, 0, 0.7);   /* Stronger shadow on hover */
+}
+
+/* Gradient background for side panel */
+.bg-gradient-sidepanel {
+  background: #001845;
+  /* Example: from dark slate gray to gray */
+  color: white;
+}
+
+/* Custom button style */
+.btn-yellow {
+  padding: 0.75rem 1.5rem;       /* px-6 py-3 */
+  background-color: #facc15;     /* Tailwind yellow-400 */
+  color: black;
+  border-radius: 0.5rem;         /* rounded */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;                  /* space between text and icon */
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+  border: none;
+  font-weight: 600;
+}
+
+.btn-yellow:hover {
+  background-color: #eab308;    /* Tailwind yellow-500 */
+  transform: scale(1.15);
+
+}
+
+.bg-white-tp-09 {
+  background-color: rgba(255, 255, 255, 0.25); /* Slightly translucent white */
+  /* Add a subtle border and shadow for better depth */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1);
+}
+
+.mg-1r {
+  margin: 1rem;
+}
+
+.pd-1r {
+  padding: 1rem;
+}
+
+.br-10p {
+  border-radius: 10px;
+}
+
+.blur-12p {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); /* Safari */
+}
+
+/* Optional: smooth transition for hover or other states */
+.blur-12p,
+.bg-white-tp-09 {
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}

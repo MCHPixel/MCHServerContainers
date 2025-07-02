@@ -1,0 +1,16 @@
+{
+  "page_title": "Welcome On DockerGS!",
+
+  "main_name": "Welcome!",
+  "welcome": "Host your own game servers easily and play with friends!",
+  "button_text": "Let's go!",
+
+  "card_title_1": "Multiple Game Support",
+  "card_subtitle_1": "Host servers for popular games like Minecraft, CS:GO, and more!",
+
+  "card_title_2": "Easy Management",
+  "card_subtitle_2": "Simple control panel to start, stop, and configure your servers anytime.",
+
+  "card_title_3": "Reliable Performance",
+  "card_subtitle_3": "24/7 uptime with powerful hardware and fast network connections."
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "name": "Minecraft",
+    "slug": "minecraft",
+    "image": "static/Minecraft.jpg",
+    "description": "Host modded or vanilla servers with full plugin support.",
+    "status": "available"
+  },
+  {
+    "name": "Counter-Strike 2",
+    "slug": "cs2",
+    "image": "static/Counter-Strike.jpg",
+    "description": "Competitive FPS server with custom map support.",
+    "status": "available"
+  },
+  {
+    "name": "Valheim",
+    "slug": "valheim",
+    "image": "static/Valheim.jpg",
+    "description": "Viking co-op survival in a procedurally generated world.",
+    "status": "available"
+  },
+  {
+    "name": "More Games",
+    "image": "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800",
+    "description": "We're working on supporting even more titles. Stay tuned!",
+    "status": "coming_soon"
+  }
+]
