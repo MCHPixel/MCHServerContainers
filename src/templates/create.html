@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Create Game Server</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          margin: 2rem;
+          max-width: 600px;
+        }
+        label, select, button {
+          display: block;
+          margin-bottom: 1rem;
+          font-size: 1.1rem;
+        }
+        button {
+          padding: 0.5rem 1rem;
+          cursor: pointer;
+          background-color: #0078d4;
+          color: white;
+          border: none;
+          border-radius: 4px;
+        }
+        button:hover {
+          background-color: #005a9e;
+        }
+        #message {
+          margin-top: 1rem;
+          font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<h1>Create a Game Server</h1>
+
+<label for="serverType">Select Server Type:</label>
+<select id="serverType" disabled>
+    <option>Loading...</option>
+</select>
+
+<label for="serverVersion">Select Version:</label>
+<select id="serverVersion" disabled>
+    <option>Loading...</option>
+</select>
+
+<button id="createBtn" disabled>Create Server</button>
+
+<div id="message"></div>
+
+<script>
+    (async () => {
+      // Extract game name from URL (e.g. /create/minecraft)
+      const pathParts = window.location.pathname.split('/');
+      const game = pathParts[2] || 'minecraft';  // default to minecraft if not present
+
+      const serverTypeSelect = document.getElementById('serverType');
+      const serverVersionSelect = document.getElementById('serverVersion');
+      const createBtn = document.getElementById('createBtn');
+      const messageDiv = document.getElementById('message');
+
+      try {
+        // Fetch options from backend API
+        const res = await fetch('/api/game-options');
+        if (!res.ok) throw new Error('Failed to fetch game options');
+
+        const options = await res.json();
+
+        if (!options[game]) {
+          messageDiv.textContent = `Game "${game}" is not supported.`;
+          return;
+        }
+
+        // Populate Server Type dropdown
+        serverTypeSelect.innerHTML = '';
+        options[game].types.forEach(type => {
+          const option = document.createElement('option');
+          option.value = type;
+          option.textContent = type;
+          serverTypeSelect.appendChild(option);
+        });
+        serverTypeSelect.disabled = false;
+
+        // Populate Version dropdown
+        serverVersionSelect.innerHTML = '';
+        options[game].versions.forEach(ver => {
+          const option = document.createElement('option');
+          option.value = ver;
+          option.textContent = ver;
+          serverVersionSelect.appendChild(option);
+        });
+        serverVersionSelect.disabled = false;
+
+        createBtn.disabled = false;
+
+      } catch (err) {
+        messageDiv.textContent = `Error loading game options: ${err.message}`;
+        return;
+      }
+
+      // On button click: send request to create server
+      createBtn.addEventListener('click', async () => {
+        createBtn.disabled = true;
+        messageDiv.textContent = "Creating server...";
+
+        const data = {
+          game,
+          type: serverTypeSelect.value,
+          version: serverVersionSelect.value
+        };
+
+        try {
+          const res = await fetch('/api/create-server', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+
+          const result = await res.json();
+          if (res.ok) {
+            messageDiv.textContent = `✅ ${result.message}`;
+          } else {
+            messageDiv.textContent = `❌ ${result.message}`;
+          }
+        } catch (err) {
+          messageDiv.textContent = `❌ Error: ${err.message}`;
+        } finally {
+          createBtn.disabled = false;
+        }
+      });
+    })();
+</script>
+</body>
+</html>
