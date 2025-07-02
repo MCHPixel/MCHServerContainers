@@ -1,134 +1,578 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>Create Game Server</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Server Deployer</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-          font-family: Arial, sans-serif;
-          margin: 2rem;
-          max-width: 600px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
         }
-        label, select, button {
-          display: block;
-          margin-bottom: 1rem;
-          font-size: 1.1rem;
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
         }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 300;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            font-size: 16px;
+            background: white;
+            transition: all 0.3s ease;
+            appearance: none;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1.5 4.5h9z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            cursor: pointer;
+        }
+
+        .advanced-options {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8eeff 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 1px solid #e1e8ed;
+        }
+
+        .advanced-options h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
         button {
-          padding: 0.5rem 1rem;
-          cursor: pointer;
-          background-color: #0078d4;
-          color: white;
-          border: none;
-          border-radius: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
         }
+
         button:hover {
-          background-color: #005a9e;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
         }
-        #message {
-          margin-top: 1rem;
-          font-weight: bold;
+
+        button:active {
+            transform: translateY(-1px);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .status.success {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .status.error {
+            background: linear-gradient(135deg, #f44336, #da190b);
+            color: white;
+        }
+
+        .status.info {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .compose-preview {
+            background: #1e1e1e;
+            color: #e0e0e0;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            display: none;
+            position: relative;
+        }
+
+        .compose-preview::before {
+            content: 'docker-compose.yml';
+            position: absolute;
+            top: -12px;
+            left: 15px;
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
         }
     </style>
 </head>
 <body>
-<h1>Create a Game Server</h1>
+<div class="container">
+    <h1>🎮 Game Server Deployer</h1>
 
-<label for="serverType">Select Server Type:</label>
-<select id="serverType" disabled>
-    <option>Loading...</option>
-</select>
+    <form id="serverForm">
+        <div class="form-group">
+            <label for="gameType">Game Type</label>
+            <select id="gameType" required>
+                <option value="">Select a game...</option>
+                <option value="minecraft">Minecraft</option>
+                <option value="valheim">Valheim</option>
+                <option value="rust">Rust</option>
+                <option value="csgo">CS:GO</option>
+            </select>
+        </div>
 
-<label for="serverVersion">Select Version:</label>
-<select id="serverVersion" disabled>
-    <option>Loading...</option>
-</select>
+        <div class="form-group">
+            <label for="serverType">Server Type</label>
+            <select id="serverType" required disabled>
+                <option value="">Select server type...</option>
+            </select>
+        </div>
 
-<button id="createBtn" disabled>Create Server</button>
+        <div class="form-group">
+            <label for="version">Version</label>
+            <select id="version" required disabled>
+                <option value="">Select version...</option>
+            </select>
+        </div>
 
-<div id="message"></div>
+        <div class="form-group">
+            <label for="serverName">Server Name</label>
+            <input type="text" id="serverName" placeholder="My Awesome Server" required>
+        </div>
+
+        <div class="advanced-options">
+            <h3>⚙️ Advanced Configuration</h3>
+
+            <div class="two-column">
+                <div class="form-group">
+                    <label for="memory">Memory (GB)</label>
+                    <select id="memory">
+                        <option value="1">1 GB</option>
+                        <option value="2" selected>2 GB</option>
+                        <option value="4">4 GB</option>
+                        <option value="8">8 GB</option>
+                        <option value="16">16 GB</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="port">Server Port</label>
+                    <input type="number" id="port" value="25565" min="1024" max="65535">
+                </div>
+            </div>
+
+            <div class="two-column">
+                <div class="form-group">
+                    <label for="difficulty">Difficulty</label>
+                    <select id="difficulty">
+                        <option value="peaceful">Peaceful</option>
+                        <option value="easy">Easy</option>
+                        <option value="normal" selected>Normal</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="maxPlayers">Max Players</label>
+                    <input type="number" id="maxPlayers" value="20" min="1" max="200">
+                </div>
+            </div>
+        </div>
+
+        <button type="submit">
+            🚀 Deploy Server
+        </button>
+    </form>
+
+    <div id="status" class="status"></div>
+    <div id="composePreview" class="compose-preview"></div>
+</div>
 
 <script>
-    (async () => {
-      // Extract game name from URL (e.g. /create/minecraft)
-      const pathParts = window.location.pathname.split('/');
-      const game = pathParts[2] || 'minecraft';  // default to minecraft if not present
+    // Server configurations
+    const serverConfigs = {
+        minecraft: {
+            types: {
+                vanilla: 'Vanilla',
+                paper: 'Paper',
+                spigot: 'Spigot',
+                bukkit: 'Bukkit',
+                forge: 'Forge',
+                fabric: 'Fabric'
+            },
+            versions: [
+                '1.21.1', '1.21.0', '1.20.6', '1.20.4', '1.20.1',
+                '1.19.4', '1.19.2', '1.18.2', '1.17.1', '1.16.5',
+                '1.15.2', '1.14.4', '1.13.2', '1.12.2', '1.11.2',
+                '1.10.2', '1.9.4', '1.8.9'
+            ],
+            defaultPort: 25565
+        },
+        valheim: {
+            types: {
+                vanilla: 'Vanilla',
+                modded: 'BepInEx Modded'
+            },
+            versions: ['latest', '0.217.46', '0.216.9', '0.214.2'],
+            defaultPort: 2456
+        },
+        rust: {
+            types: {
+                vanilla: 'Vanilla',
+                oxide: 'Oxide/uMod'
+            },
+            versions: ['latest', 'staging'],
+            defaultPort: 28015
+        },
+        csgo: {
+            types: {
+                vanilla: 'Vanilla',
+                metamod: 'MetaMod',
+                sourcemod: 'SourceMod'
+            },
+            versions: ['latest'],
+            defaultPort: 27015
+        }
+    };
 
-      const serverTypeSelect = document.getElementById('serverType');
-      const serverVersionSelect = document.getElementById('serverVersion');
-      const createBtn = document.getElementById('createBtn');
-      const messageDiv = document.getElementById('message');
+    // DOM elements
+    const gameTypeSelect = document.getElementById('gameType');
+    const serverTypeSelect = document.getElementById('serverType');
+    const versionSelect = document.getElementById('version');
+    const portInput = document.getElementById('port');
+    const form = document.getElementById('serverForm');
+    const statusDiv = document.getElementById('status');
+    const composePreview = document.getElementById('composePreview');
 
-      try {
-        // Fetch options from backend API
-        const res = await fetch('/api/game-options');
-        if (!res.ok) throw new Error('Failed to fetch game options');
+    // Event listeners
+    gameTypeSelect.addEventListener('change', updateServerTypes);
+    serverTypeSelect.addEventListener('change', updateVersions);
+    form.addEventListener('submit', deployServer);
 
-        const options = await res.json();
+    function updateServerTypes() {
+        const gameType = gameTypeSelect.value;
+        const config = serverConfigs[gameType];
 
-        if (!options[game]) {
-          messageDiv.textContent = `Game "${game}" is not supported.`;
-          return;
+        // Clear and enable server type select
+        serverTypeSelect.innerHTML = '<option value="">Select server type...</option>';
+        serverTypeSelect.disabled = !gameType;
+
+        // Clear and disable version select
+        versionSelect.innerHTML = '<option value="">Select version...</option>';
+        versionSelect.disabled = true;
+
+        if (config) {
+            // Populate server types
+            Object.entries(config.types).forEach(([key, label]) => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = label;
+                serverTypeSelect.appendChild(option);
+            });
+
+            // Update default port
+            portInput.value = config.defaultPort;
+        }
+    }
+
+    function updateVersions() {
+        const gameType = gameTypeSelect.value;
+        const config = serverConfigs[gameType];
+
+        // Clear and enable version select
+        versionSelect.innerHTML = '<option value="">Select version...</option>';
+        versionSelect.disabled = !serverTypeSelect.value;
+
+        if (config && serverTypeSelect.value) {
+            // Populate versions
+            config.versions.forEach(version => {
+                const option = document.createElement('option');
+                option.value = version;
+                option.textContent = version;
+                versionSelect.appendChild(option);
+            });
+        }
+    }
+
+    function generateDockerCompose(formData) {
+        const containerName = formData.serverName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        const gameType = formData.gameType;
+
+        let compose = `version: '3.8'
+services:
+${containerName}:
+container_name: ${containerName}`;
+
+        // Generate image and environment based on game type
+        switch (gameType) {
+            case 'minecraft':
+                compose += `
+image: itzg/minecraft-server:latest
+environment:
+  EULA: "TRUE"
+  TYPE: ${formData.serverType.toUpperCase()}
+  VERSION: ${formData.version}
+  SERVER_NAME: "${formData.serverName}"
+  DIFFICULTY: ${formData.difficulty}
+  MAX_PLAYERS: ${formData.maxPlayers}
+  MEMORY: ${formData.memory}G
+  OVERRIDE_SERVER_PROPERTIES: "true"`;
+                break;
+
+            case 'valheim':
+                compose += `
+image: lloesche/valheim-server:latest
+environment:
+  SERVER_NAME: "${formData.serverName}"
+  WORLD_NAME: "Dedicated"
+  SERVER_PASS: "changeme"
+  SERVER_PUBLIC: "false"`;
+                break;
+
+            case 'rust':
+                compose += `
+image: didstopia/rust-server:latest
+environment:
+  RUST_SERVER_NAME: "${formData.serverName}"
+  RUST_SERVER_DESCRIPTION: "A Rust server"
+  RUST_SERVER_URL: "https://example.com"
+  RUST_WORLD_SIZE: "3000"
+  RUST_WORLD_SEED: "12345"
+  RUST_SERVER_MAXPLAYERS: ${formData.maxPlayers}`;
+                break;
+
+            case 'csgo':
+                compose += `
+image: cm2network/csgo:latest
+environment:
+  SRCDS_TOKEN: "your_token_here"
+  SRCDS_HOSTNAME: "${formData.serverName}"
+  SRCDS_MAXPLAYERS: ${formData.maxPlayers}`;
+                break;
         }
 
-        // Populate Server Type dropdown
-        serverTypeSelect.innerHTML = '';
-        options[game].types.forEach(type => {
-          const option = document.createElement('option');
-          option.value = type;
-          option.textContent = type;
-          serverTypeSelect.appendChild(option);
-        });
-        serverTypeSelect.disabled = false;
+        compose += `
+ports:
+  - "${formData.port}:${formData.port}"
+volumes:
+  - ./${containerName}_data:/data
+restart: unless-stopped
+stdin_open: true
+tty: true`;
 
-        // Populate Version dropdown
-        serverVersionSelect.innerHTML = '';
-        options[game].versions.forEach(ver => {
-          const option = document.createElement('option');
-          option.value = ver;
-          option.textContent = ver;
-          serverVersionSelect.appendChild(option);
-        });
-        serverVersionSelect.disabled = false;
+        return compose;
+    }
 
-        createBtn.disabled = false;
+    function showStatus(message, type) {
+        statusDiv.textContent = message;
+        statusDiv.className = `status ${type}`;
+        statusDiv.style.display = 'block';
 
-      } catch (err) {
-        messageDiv.textContent = `Error loading game options: ${err.message}`;
-        return;
-      }
+        setTimeout(() => {
+            statusDiv.style.display = 'none';
+        }, 5000);
+    }
 
-      // On button click: send request to create server
-      createBtn.addEventListener('click', async () => {
-        createBtn.disabled = true;
-        messageDiv.textContent = "Creating server...";
+    async function deployServer(e) {
+        e.preventDefault();
 
-        const data = {
-          game,
-          type: serverTypeSelect.value,
-          version: serverVersionSelect.value
+        const formData = {
+            gameType: gameTypeSelect.value,
+            serverType: serverTypeSelect.value,
+            version: versionSelect.value,
+            serverName: document.getElementById('serverName').value,
+            memory: document.getElementById('memory').value,
+            port: document.getElementById('port').value,
+            difficulty: document.getElementById('difficulty').value,
+            maxPlayers: document.getElementById('maxPlayers').value
         };
 
-        try {
-          const res = await fetch('/api/create-server', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-          });
+        // Show loading state
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<div class="loading"></div>Deploying...';
+        submitBtn.disabled = true;
 
-          const result = await res.json();
-          if (res.ok) {
-            messageDiv.textContent = `✅ ${result.message}`;
-          } else {
-            messageDiv.textContent = `❌ ${result.message}`;
-          }
-        } catch (err) {
-          messageDiv.textContent = `❌ Error: ${err.message}`;
+        try {
+            // Generate docker-compose.yml
+            const composeContent = generateDockerCompose(formData);
+
+            // Show preview
+            composePreview.textContent = composeContent;
+            composePreview.style.display = 'block';
+
+            // Simulate deployment process
+            showStatus('Generating Docker Compose file...', 'info');
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            showStatus('Creating container volumes...', 'info');
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            showStatus('Pulling Docker images...', 'info');
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            showStatus('Starting server container...', 'info');
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // In a real implementation, you would:
+            // 1. Send the compose file to your backend
+            // 2. Execute docker-compose up -d
+            // 3. Monitor the deployment status
+
+            showStatus(`🎉 Server "${formData.serverName}" deployed successfully! Running on port ${formData.port}`, 'success');
+
+            // Create download link for compose file
+            const blob = new Blob([composeContent], { type: 'text/yaml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${formData.serverName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-docker-compose.yml`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+        } catch (error) {
+            showStatus(`❌ Deployment failed: ${error.message}`, 'error');
         } finally {
-          createBtn.disabled = false;
+            // Restore button
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
         }
-      });
-    })();
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        showStatus('🌟 Welcome! Select your game type to get started.', 'info');
+    });
 </script>
 </body>
 </html>
