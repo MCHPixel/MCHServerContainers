@@ -1,5 +1,12 @@
 [
   {
+    "name": "Counter-Strike 2",
+    "slug": "cs2",
+    "image": "static/Counter-Strike.jpg",
+    "description": "Competitive FPS server with custom map support.",
+    "status": "available"
+  },
+  {
     "name": "Minecraft",
     "slug": "minecraft",
     "image": "static/Minecraft.jpg",
@@ -7,10 +14,24 @@
     "status": "available"
   },
   {
-    "name": "Counter-Strike 2",
-    "slug": "cs2",
-    "image": "static/Counter-Strike.jpg",
-    "description": "Competitive FPS server with custom map support.",
+    "name": "Rust",
+    "slug": "rust",
+    "image": "static/Rust.jpg",
+    "description": "A multiplayer survival game where players must gather resources, build shelters, and survive against the environment and each other.",
+    "status": "available"
+  },
+  {
+    "name": "Satisfactory",
+    "slug": "satisfactory",
+    "image": "static/Satisfactory.png",
+    "description": "A first-person open-world factory building game with a focus on exploration and automation.",
+    "status": "available"
+  },
+  {
+    "name": "Space Engineers",
+    "slug": "space_engineers",
+    "image": "static/Space Engineers.png",
+    "description": "A sandbox game about engineering, construction, exploration, and survival in space and on planets.",
     "status": "available"
   },
   {
@@ -19,7 +40,8 @@
     "image": "static/Valheim.jpg",
     "description": "Viking co-op survival in a procedurally generated world.",
     "status": "available"
-  },
+  }
+,
   {
     "name": "More Games",
     "image": "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800",

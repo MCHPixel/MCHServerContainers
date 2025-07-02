@@ -13,8 +13,14 @@ def index():
 
 @app.route('/welcome')
 def welcome():
+    with open("templates/games.json", "r", encoding="utf-8") as file:
+        games = json.load(file)
     return render_template('welcome.html', games=games)
 
+
+@app.route('/create')
+def create():
+    return render_template('create.html')
 
 @app.route('/about')
 def about():
